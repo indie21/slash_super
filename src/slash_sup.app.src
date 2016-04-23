@@ -1,0 +1,12 @@
+{application, slash_sup,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { slash_sup_app, []}},
+  {env, []}
+ ]}.
