@@ -1,0 +1,1 @@
+-record(slash_super, {id,pid}).

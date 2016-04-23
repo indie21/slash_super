@@ -1,1 +1,5 @@
-各个节点的启动监督者
+* 存在的理由
+由于supervisor的启动时串行的，同一个erlang节点如果出现大量使用同一个的情况可能会卡，这里实现一个super池.
+
+* 实现相关
+此app依赖slash_cluster，需要在slash_cluster之后启动.
