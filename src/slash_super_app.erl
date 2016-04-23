@@ -23,18 +23,16 @@ start() ->
     [start_super_one(Id) || Id <- lists:seq(1, Count) ],
     ok.
 
-
 atom_suffix(Prefix, No) ->
     L = atom_to_list(Prefix) ++ "_" ++ integer_to_list(No),
     list_to_atom(L).
 
-
 %% 获取super的spec.
 super_spec(Id) ->
-    Name = atom_suffix(slash_super_sup_worker, Id),
-    {Name,
-     {slash_super_sup_worker, start_link, [Name]},
-     permanent,
+    SupName = atom_suffix(slash_super_sup_worker, Id),
+    {SupName,
+     {slash_super_sup_worker, start_link, [SupName]},
+     transient,
      infinity,
      supervisor,
      []
@@ -42,10 +40,11 @@ super_spec(Id) ->
 
 %% 获取super的spec.
 worker_spec(Id) ->
-    Name = atom_suffix(slash_super_worker, Id),
-    {Name,
-     {slash_super_worker, start_link, [Name]},
-     permanent,
+    SupName = atom_suffix(slash_super_sup_worker, Id),
+    WorkerName = atom_suffix(slash_super_worker, Id),
+    {WorkerName,
+     {slash_super_worker, start_link, [SupName, WorkerName]},
+     transient,
      infinity,
      worker,
      []

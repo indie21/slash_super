@@ -1,1 +1,1 @@
--record(slash_super, {id,pid}).
+-record(super, {id, pid}).
