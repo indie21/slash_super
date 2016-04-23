@@ -55,7 +55,7 @@ handle_call(_Request, _From, State) ->
 %% 异步调用。
 handle_cast({start_child, Spec, Fun}, State = #state{sup_name=SuperName}) ->
     case start_child(SuperName, Spec) of
-        Pid when is_pid(Pid) -> Fun(Pid);
+        Pid when is_pid(Pid) -> spawn(fun() -> Fun(Pid) end);
         _-> ignore
     end,
     {noreply, State};
