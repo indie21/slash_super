@@ -1,4 +1,4 @@
--module(slash_sup_sup).
+-module(slash_super_sup).
 
 -behaviour(supervisor).
 

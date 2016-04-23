@@ -1,4 +1,4 @@
--module(slash_sup_app).
+-module(slash_super_app).
 
 -behaviour(application).
 
@@ -10,7 +10,7 @@
 %% ===================================================================
 
 start(_StartType, _StartArgs) ->
-    slash_sup_sup:start_link().
+    slash_super_sup:start_link().
 
 stop(_State) ->
     ok.

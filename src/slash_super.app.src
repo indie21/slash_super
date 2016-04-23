@@ -1,4 +1,4 @@
-{application, slash_sup,
+{application, slash_super,
  [
   {description, ""},
   {vsn, "1"},
@@ -7,6 +7,6 @@
                   kernel,
                   stdlib
                  ]},
-  {mod, { slash_sup_app, []}},
+  {mod, { slash_super_app, []}},
   {env, []}
  ]}.
