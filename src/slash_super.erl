@@ -3,6 +3,21 @@
 
 -include("def.hrl").
 
+start_master() ->
+    mnesia:start(),
+    application:start(slash_cluster),
+    super = slash_cluster:init_table(super, record_info(fields, super), bag),
+    slash_super_app:start(),
+    ok.
+
+
+start() ->
+    mnesia:start(),
+    application:start(slash_cluster),
+    slash_super_app:start(),
+    ok.
+
+
 %% 查找某一个Node上任意一个super.
 get(Node) ->
     List = mnesia:dirty_read(super, Node),
