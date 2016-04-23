@@ -38,27 +38,35 @@ start_link(SuperName, Name) ->
 %%%===================================================================
 
 init([SuperName]) ->
-    io:format("init ~p~n", [SuperName]),
     Slash = #super{id=node(), pid=self()},
     process_flag(trap_exit, true),
-    slash_cluster:set_proc(super, Slash),
+    slash_cluster:set_val(super, Slash),
     {ok, #state{sup_name=SuperName}}.
+
+%% 同步调用。
+handle_call({start_child, Spec}, _From, State = #state{sup_name=SuperName}) ->
+    Reply = start_child(SuperName, Spec),
+    {reply, Reply, State};
 
 handle_call(_Request, _From, State) ->
     Reply = ok,
     {reply, Reply, State}.
 
+%% 异步调用。
+handle_cast({start_child, Spec, Fun}, State = #state{sup_name=SuperName}) ->
+    case start_child(SuperName, Spec) of
+        Pid when is_pid(Pid) -> Fun(Pid);
+        _-> ignore
+    end,
+    {noreply, State};
+
 handle_cast(_Msg, State) ->
     {noreply, State}.
 
-handle_info(crash, State) ->
-    {stop, crash, State};
-handle_info(Info, State) ->
-    io:format("info ~p ~n",[Info]),
+handle_info(_Info, State) ->
     {noreply, State}.
 
-terminate(Reason, _State) ->
-    io:format("termiante ~p~n", [Reason]),
+terminate(_Reason, _State) ->
     Slash = #super{id=node(), pid=self()},
     slash_cluster:del_object(super, Slash),
     ok.
@@ -71,3 +79,9 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 
 
+%% 新启动一个child.
+start_child(SuperName, Spec) ->
+    case catch supervisor:start_child(SuperName, Spec) of
+        {ok,Pid} -> Pid;
+        E -> io:format("start_child error ~p~n", [E]), undefined
+    end.
